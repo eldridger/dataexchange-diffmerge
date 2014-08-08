@@ -1,0 +1,15 @@
+build
+lib/*
+
+bin/*
+
+//Visual studio stuff
+*.opensdf
+*.sdf
+*.sln
+*.suo
+*.vcxproj
+*.filters
+*.user
+
+Debug/
