@@ -7,20 +7,24 @@
 
 void Printer::visit(const ValueNode * leaf) {
 	//std::cout << "ValueNode Visited!" << std::endl;
-
+	std::cout << leaf->fullString << std::endl;
+	/*
 	switch (leaf->leafVal) {
+	case LEAFSYMBOL:
+		std::cout << leaf->fullString << std::endl;
+		break;
 	case LEAFSTRING:
-		std::cout << '"' << leaf->stringVal << '"' << std::endl;
+		std::cout << '"' << leaf->fullString << '"' << std::endl;
 		break;
 	case LEAFNUM:
-		std::cout << leaf->numVal << std::endl;
+		std::cout << leaf->fullString << std::endl;
 		break;
 	case LEAFBOOL:
 		if (leaf->boolVal) {
-			std::cout << "true" << std::endl;
+			std::cout << leaf->fullString << std::endl;
 		}
 		else {
-			std::cout << "false" << std::endl;
+			std::cout << leaf->fullString << std::endl;
 		}
 		break;
 	case LEAFNULL:
@@ -30,7 +34,7 @@ void Printer::visit(const ValueNode * leaf) {
 		std::cout << "IDK?" << std::endl;
 		break;
 
-	}
+	} */
 }
 
 void Printer::visit(const Value * value) {

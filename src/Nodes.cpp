@@ -3,6 +3,24 @@
 #include <fstream>
 #include <string>
 
+JSON::JSON(std::fstream & file) {
+	char c = (file >> std::ws).peek();
+
+	if (c == '{') {
+		children.push_back(new Object(file));
+	}
+	else if (c == '[') {
+		children.push_back(new Array(file));
+	}
+	else {
+		std::cout << "Invalid JSON";
+	}
+
+	//Update string based on children
+	for (std::vector<Node*>::const_iterator it = children.begin(); it != children.end(); ++it) {
+		fullString += (*it)->fullString;
+	}
+}
 void JSON::accept(Visitor * v) {
 	v->visit(this);
 }
@@ -15,7 +33,7 @@ void JSON::accept(Visitor * v) {
 Object::Object(std::fstream & file) {
 	char c = (file >> std::ws).peek();
 	if (c == '{') {
-		children.push_back(new ValueNode('{'));
+		children.push_back(new ValueNode('{', false));
 		file >> c;
 	} else{
 		std::cout << "SUMTHIN DUN GOOFED" << std::endl;
@@ -27,8 +45,13 @@ Object::Object(std::fstream & file) {
 		children.push_back(new Members(file));
 	} //     ELSE '{' '}'
 
-	children.push_back(new ValueNode('}'));
+	children.push_back(new ValueNode('}', false));
 	file >> c;
+
+	//Update string based on children
+	for (std::vector<Node*>::const_iterator it = children.begin(); it != children.end(); ++it) {
+		fullString += (*it)->fullString;
+	}
 }
 
 void Object::accept(Visitor * v) {
@@ -48,10 +71,15 @@ Members::Members(std::fstream & file) {
 	c = (char)(file >> std::ws).peek();
 
 	if (c == ',') {
-		children.push_back(new ValueNode(','));
+		children.push_back(new ValueNode(',', false));
 		file >> c;
 		c = (char)(file >> std::ws).peek();
 		children.push_back(new Members(file));
+	}
+
+	//Update string based on children
+	for (std::vector<Node*>::const_iterator it = children.begin(); it != children.end(); ++it) {
+		fullString += (*it)->fullString;
 	}
 
 }
@@ -86,9 +114,14 @@ Pair::Pair(std::fstream & file) {
 		std::cout << "ERROR: no : found after String Key in Pair";
 	}
 	else {
-		children.push_back(new ValueNode(':'));
+		children.push_back(new ValueNode(':', false));
 		file >> c;
 		children.push_back(new Value(file));
+	}
+
+	//Update string based on children
+	for (std::vector<Node*>::const_iterator it = children.begin(); it != children.end(); ++it) {
+		fullString += (*it)->fullString;
 	}
 }
 void Pair::accept(Visitor * v) {
@@ -107,7 +140,7 @@ Array::Array(std::fstream & file) {
 		std::cout << "Something is wrong! (Array Const)";
 	}
 	else {
-		children.push_back(new ValueNode('['));
+		children.push_back(new ValueNode('[', false));
 		file >> c;
 
 		c = (char)(file >> std::ws).peek();
@@ -116,8 +149,13 @@ Array::Array(std::fstream & file) {
 			children.push_back(new Element(file));
 		}
 
-		children.push_back(new ValueNode(']'));
+		children.push_back(new ValueNode(']', false));
 		file >> c;
+	}
+
+	//Update string based on children
+	for (std::vector<Node*>::const_iterator it = children.begin(); it != children.end(); ++it) {
+		fullString += (*it)->fullString;
 	}
 }
 void Array::accept(Visitor * v) {
@@ -135,9 +173,14 @@ Element::Element(std::fstream & file) {
 	c = (char)(file >> std::ws).peek();
 
 	if (c == ',') {
-		children.push_back(new ValueNode(','));
+		children.push_back(new ValueNode(',', false));
 		file >> c;
 		children.push_back(new Element(file));
+	}
+
+	//Update string based on children
+	for (std::vector<Node*>::const_iterator it = children.begin(); it != children.end(); ++it) {
+		fullString += (*it)->fullString;
 	}
 	
 }
@@ -224,33 +267,68 @@ Value::Value(std::fstream & file) {
 		}
 
 	}
+
+	//Update string based on children
+	for (std::vector<Node*>::const_iterator it = children.begin(); it != children.end(); ++it) {
+		fullString += (*it)->fullString;
+	}
 }
 void Value::accept(Visitor * v) {
 	v->visit(this);
 }
 
-ValueNode::ValueNode(char ch) {
-	leafVal = LEAFSTRING;
-	stringVal += ch;
+ValueNode::ValueNode(char ch, bool isString) {
+	std::string s;
+	if (isString) {
+		leafVal = LEAFSTRING;
+		s = '"';
+		s += ch;
+		s += '"';
+	}
+	else {
+		leafVal = LEAFSYMBOL;
+		s = ch;
+	}
+
+	fullString += s;
 }
 
-ValueNode::ValueNode(std::string string) {
-	leafVal = LEAFSTRING;
-	stringVal = string;
+ValueNode::ValueNode(std::string string, bool isString) {
+	std::string s;
+	if (isString) {
+		leafVal = LEAFSTRING;
+		s = '"';
+		s += string;
+		s += '"';
+	}
+	else {
+		leafVal = LEAFSYMBOL;
+		s = string;
+	}
+	fullString += s;
 }
 
 ValueNode::ValueNode(int number) {
 	leafVal = LEAFNUM;
 	numVal = number;
+
+	fullString += std::to_string(number);
 }
 
 ValueNode::ValueNode(bool boolValue) {
 	leafVal = LEAFBOOL;
 	boolVal = boolValue;
+	if (boolVal) {
+		fullString += "true";
+	}
+	else {
+		fullString += "false";
+	}
 }
 
 ValueNode::ValueNode() {
 	leafVal = LEAFNULL;
+	fullString += "null";
 }
 
 void ValueNode::accept(Visitor * v) {

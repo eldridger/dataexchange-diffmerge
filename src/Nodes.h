@@ -13,10 +13,13 @@
 */
 class Node {
 public:
+	std::string fullString;
+	std::vector<Node*> children;
 	virtual void accept(Visitor * v) = 0;
 };
 
 typedef enum {
+	LEAFSYMBOL,    //NON-String symbol
 	LEAFSTRING,    //String
 	LEAFNUM,       //Number
 	LEAFBOOL,      //Boolean
@@ -50,18 +53,22 @@ class JSON : public Node {
 public:
 	std::vector<Node*> children;
 	void accept(Visitor * v);
+	void accept(Visitor * v1, Visitor * v2);
+	JSON(std::fstream & file);
 };
 
 class Object : public Node {
 public:
 	std::vector<Node*> children;
 	void accept(Visitor * v);
+	void accept(Visitor * v1, Visitor * v2);
 	Object(std::fstream & file);
 };
 
 class Members : public Node {
 public:
 	std::vector<Node*> children;
+	void accept(Visitor * v1, Visitor * v2);
 	void accept(Visitor * v);
 	Members(std::fstream & file);
 };
@@ -69,6 +76,7 @@ public:
 class Pair : public Node {
 public:
 	std::vector<Node*> children;
+	void accept(Visitor * v1, Visitor * v2);
 	void accept(Visitor * v);
 	Pair(std::fstream & file);
 };
@@ -76,6 +84,7 @@ public:
 class Array : public Node {
 public:
 	std::vector<Node*> children;
+	void accept(Visitor * v1, Visitor * v2);
 	void accept(Visitor * v);
 	Array(std::fstream & file);
 };
@@ -83,6 +92,7 @@ public:
 class Element : public Node {
 public:
 	std::vector<Node*> children;
+	void accept(Visitor * v1, Visitor * v2);
 	void accept(Visitor * v);
 	Element(std::fstream & file);
 };
@@ -90,6 +100,7 @@ public:
 class Value : public Node {
 public:
 	std::vector<Node*> children;
+	void accept(Visitor * v1, Visitor * v2);
 	void accept(Visitor * v);
 	Value(std::fstream & file);
 };
@@ -109,12 +120,12 @@ public:
 	 * ValueNode Char Constructor
 	 *    Just converts to string
 	 */
-	ValueNode(char ch);
+	ValueNode(char ch, bool isString = true);
 
 	/**
 	* ValueNode String Constructor
 	*/
-	ValueNode(std::string string);
+	ValueNode(std::string string, bool isString = true);
 
 	/**
 	* ValueNode number Constructor
@@ -130,6 +141,6 @@ public:
 	* ValueNode Null Constructor
 	*/
 	ValueNode();
-
+	void accept(Visitor * v1, Visitor * v2);
 	void accept(Visitor * v);
 };
