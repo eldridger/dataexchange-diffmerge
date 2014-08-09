@@ -191,12 +191,12 @@ void Element::accept(Visitor * v) {
 /************************************************************************/
 /* Value Constructor                                                    */
 /*       <Value> ->   String                                            */
-/*				|     Number                                            */
-/*				|     <Object>                                          */
-/*				|     <Array>                                           */
-/*				|     true                                              */
-/*				|     false                                             */
-/*				|     null                                              */
+/*      	|     Number                                            */
+/*		|     <Object>                                          */
+/*		|     <Array>                                           */
+/*		|     true                                              */
+/*		|     false                                             */
+/*		|     null                                              */
 /************************************************************************/
 Value::Value(std::fstream & file) {
 	char c = (char)(file >> std::ws).peek();
