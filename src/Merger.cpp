@@ -157,7 +157,7 @@ Node* Merger::merge(const Node * node1, const Node * node2) {
 			std::vector<Node*>::iterator it = first->children.begin();
 			std::vector<Node*>::iterator secondit = second->children.begin();
 
-			int index = 0;
+			int index = 0;	
 
 			//Match remaining nodes in first with node1 and set isMerge to true
 			while (it != first->children.end()) {
