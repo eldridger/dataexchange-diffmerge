@@ -1,8 +1,8 @@
 {
-    "Key": "Stuff",
     "things": {
         "numbers": [
             15, 2, 3
         ]
-    }
+    },
+    "Key": "Stuff"
 }

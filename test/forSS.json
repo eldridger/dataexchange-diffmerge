@@ -1,0 +1,15 @@
+{
+  "_id": "53e8bd1445f96c74202c3abc",
+  "index": 0,
+  "guid": "2227c8cf-fbb7-4797-9370-c771f9e59d33",
+  "isActive": true,
+  "balance": "$1,214.37",
+  "picture": "http://placehold.it/32x32",
+  "age": 40,
+  "eyeColor": "green",
+  "name": "Kent Saunders",
+  "gender": "male",
+  "company": "ZORK",
+  "email": "kentsaunders@zork.com",
+  "phone": "+1 (856) 570-3096"
+}
