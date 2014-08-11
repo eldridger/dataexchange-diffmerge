@@ -1,9 +1,8 @@
-
 {
-	"Key" : "Stuff",
-	"jdsakfjdsa" : {
-		"sdafdsa" : [
-			15,2,3
-		]
-	}
+    "Key": "Stuff",
+    "things": {
+        "numbers": [
+            15, 2, 3
+        ]
+    }
 }

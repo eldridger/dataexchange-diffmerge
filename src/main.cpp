@@ -11,6 +11,12 @@
 #include "Printer.h"
 #endif // printer_h__
 
+#ifndef writer_h__
+#define writer_h__
+
+#include "Writer.h"
+#endif // writer_h__
+
 #ifndef merger_h__
 #define merger_h__
 
@@ -26,25 +32,35 @@ int main(int argc, char *argv[]) {
 	JSON *json2;
 	Printer printer;
 	Merger merger;
+	Writer writer;
 	if(argc == 1) {
 		std::cout << argv[0] << ": No input files." << std::endl;
 	} else if (argc == 3) {
 		//for (int i = 1; i < argc; i++) {
-		std::cout << "*************FILE 1*************" << std::endl;
+			//std::cout << "*************FILE 1*************" << std::endl;
 			file.open(argv[1], std::fstream::in);
 			json1 = new JSON(file);
-			json1->accept(&printer);
+			//json1->accept(&printer);
 			//merger.mergeWith = json1;
 			file.close();
 
-			std::cout << "*************FILE 2*************" << std::endl;
+			//std::cout << "*************FILE 2*************" << std::endl;
 
 			file.open(argv[2], std::fstream::in);
 			//parse(file,json2);
 			json2 = new JSON(file);
-			json2->accept(&printer);
+			//json2->accept(&printer);
 
-			merger.merge(json1, json2);
+
+
+			Node* mergedJSON = merger.merge(json1, json2);
+
+			mergedJSON->accept(&writer);
+			//std::cout << "SAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" << mergedJSON->fullString << std::endl;
+			//JSON *temp = .clone();
+			//temp->children.push_back(mergedJSON);
+			//temp->accept(&writer);
+
 			//json2->accept(merger);
 
 			/*

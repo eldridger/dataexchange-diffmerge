@@ -3,6 +3,8 @@ lib/*
 
 bin/*
 
+*.obj
+
 //Visual studio stuff
 *.opensdf
 *.sdf
@@ -11,5 +13,10 @@ bin/*
 *.vcxproj
 *.filters
 *.user
+*.tlog
+*.log
+*.idb
+*.pdb
 
 Debug/
+

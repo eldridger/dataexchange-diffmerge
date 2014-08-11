@@ -13,9 +13,19 @@
 */
 class Node {
 public:
+	bool isDiff = false;
+	bool isMerge = false;
+	bool hasChange = false;
+	bool matched = false;
+	void setFullString();
+
+	bool isLeaf = false;
+	bool canReorder = false;
 	std::string fullString;
 	std::vector<Node*> children;
 	virtual void accept(Visitor * v) = 0;
+	virtual Node* clone() const = 0;
+	virtual void copy(Node* cop) = 0;
 };
 
 typedef enum {
@@ -51,7 +61,8 @@ typedef enum {
 
 class JSON : public Node {
 public:
-	std::vector<Node*> children;
+	void copy(Node* cop);
+	Node* clone() const;
 	void accept(Visitor * v);
 	void accept(Visitor * v1, Visitor * v2);
 	JSON(std::fstream & file);
@@ -59,7 +70,8 @@ public:
 
 class Object : public Node {
 public:
-	std::vector<Node*> children;
+	void copy(Node* cop);
+	Node* clone() const;
 	void accept(Visitor * v);
 	void accept(Visitor * v1, Visitor * v2);
 	Object(std::fstream & file);
@@ -67,7 +79,8 @@ public:
 
 class Members : public Node {
 public:
-	std::vector<Node*> children;
+	void copy(Node* cop);
+	Node* clone() const;
 	void accept(Visitor * v1, Visitor * v2);
 	void accept(Visitor * v);
 	Members(std::fstream & file);
@@ -75,7 +88,8 @@ public:
 
 class Pair : public Node {
 public:
-	std::vector<Node*> children;
+	void copy(Node* cop);
+	Node* clone() const;
 	void accept(Visitor * v1, Visitor * v2);
 	void accept(Visitor * v);
 	Pair(std::fstream & file);
@@ -83,7 +97,8 @@ public:
 
 class Array : public Node {
 public:
-	std::vector<Node*> children;
+	void copy(Node* cop);
+	Node* clone() const;
 	void accept(Visitor * v1, Visitor * v2);
 	void accept(Visitor * v);
 	Array(std::fstream & file);
@@ -91,7 +106,8 @@ public:
 
 class Element : public Node {
 public:
-	std::vector<Node*> children;
+	void copy(Node* cop);
+	Node* clone() const;
 	void accept(Visitor * v1, Visitor * v2);
 	void accept(Visitor * v);
 	Element(std::fstream & file);
@@ -99,7 +115,8 @@ public:
 
 class Value : public Node {
 public:
-	std::vector<Node*> children;
+	void copy(Node* cop);
+	Node* clone() const;
 	void accept(Visitor * v1, Visitor * v2);
 	void accept(Visitor * v);
 	Value(std::fstream & file);
@@ -111,6 +128,8 @@ public:
 */
 class ValueNode : public Node {
 public:
+	void copy(Node* cop);
+	Node* clone() const;
 	std::string stringVal;
 	int numVal;
 	bool boolVal;

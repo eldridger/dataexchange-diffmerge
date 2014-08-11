@@ -3,6 +3,19 @@
 #include <fstream>
 #include <string>
 
+void Node::setFullString() {
+	//Update string based on children
+	for (std::vector<Node*>::const_iterator it = children.begin(); it != children.end(); ++it) {
+		fullString += (*it)->fullString;
+	}
+}
+
+void JSON::copy(Node* cop) {
+	Node* clone = cop->clone();
+}
+Node* JSON::clone() const {
+	return new JSON(*this);
+}
 JSON::JSON(std::fstream & file) {
 	char c = (file >> std::ws).peek();
 
@@ -25,12 +38,14 @@ void JSON::accept(Visitor * v) {
 	v->visit(this);
 }
 
+
 /************************************************************************/
 /* Object Constructor                                                   */
 /*       <Object> ->   '{'  '}'                                         */
 /*                   | '{' < Members > '}'                              */
 /************************************************************************/
 Object::Object(std::fstream & file) {
+	canReorder = true;
 	char c = (file >> std::ws).peek();
 	if (c == '{') {
 		children.push_back(new ValueNode('{', false));
@@ -53,6 +68,12 @@ Object::Object(std::fstream & file) {
 		fullString += (*it)->fullString;
 	}
 }
+void Object::copy(Node* cop) {
+	Node* clone = cop->clone();
+}
+Node* Object::clone() const {
+	return new Object(*this);
+}
 
 void Object::accept(Visitor * v) {
 	v->visit(this);
@@ -65,6 +86,7 @@ void Object::accept(Visitor * v) {
 /*                   |   <Pair>  ',' <Members>                          */
 /************************************************************************/
 Members::Members(std::fstream & file) {
+	canReorder = true;
 	char c;
 
 	children.push_back(new Pair(file));
@@ -82,6 +104,12 @@ Members::Members(std::fstream & file) {
 		fullString += (*it)->fullString;
 	}
 
+}
+void Members::copy(Node* cop) {
+	Node* clone = cop->clone();
+}
+Node* Members::clone() const {
+	return new Members(*this);
 }
 void Members::accept(Visitor * v) {
 	v->visit(this);
@@ -124,13 +152,19 @@ Pair::Pair(std::fstream & file) {
 		fullString += (*it)->fullString;
 	}
 }
+void Pair::copy(Node* cop) {
+	Node* clone = cop->clone();
+}
+Node* Pair::clone() const {
+	return new Pair(*this);
+}
 void Pair::accept(Visitor * v) {
 	v->visit(this);
 }
 
 /************************************************************************/
 /* Array Constructor                                                    */
-/*       <Array> ->    '['  ']'                                          */
+/*       <Array> ->    '['  ']'                                         */
 /*              |     '['   <Elements>   ']'                            */
 /************************************************************************/
 Array::Array(std::fstream & file) {
@@ -158,6 +192,12 @@ Array::Array(std::fstream & file) {
 		fullString += (*it)->fullString;
 	}
 }
+void Array::copy(Node* cop) {
+	Node* clone = cop->clone();
+}
+Node* Array::clone() const {
+	return new Array(*this);
+}
 void Array::accept(Visitor * v) {
 	v->visit(this);
 }
@@ -183,6 +223,12 @@ Element::Element(std::fstream & file) {
 		fullString += (*it)->fullString;
 	}
 	
+}
+void Element::copy(Node* cop) {
+	Node* clone = cop->clone();
+}
+Node* Element::clone() const {
+	return new Element(*this);
 }
 void Element::accept(Visitor * v) {
 	v->visit(this);
@@ -273,11 +319,18 @@ Value::Value(std::fstream & file) {
 		fullString += (*it)->fullString;
 	}
 }
+void Value::copy(Node* cop) {
+	Node* clone = cop->clone();
+}
+Node* Value::clone() const {
+	return new Value(*this);
+}
 void Value::accept(Visitor * v) {
 	v->visit(this);
 }
 
 ValueNode::ValueNode(char ch, bool isString) {
+	isLeaf = true;
 	std::string s;
 	if (isString) {
 		leafVal = LEAFSTRING;
@@ -329,6 +382,12 @@ ValueNode::ValueNode(bool boolValue) {
 ValueNode::ValueNode() {
 	leafVal = LEAFNULL;
 	fullString += "null";
+}
+void ValueNode::copy(Node* cop) {
+	Node* clone = cop->clone();
+}
+Node* ValueNode::clone() const {
+	return new ValueNode(*this);
 }
 
 void ValueNode::accept(Visitor * v) {
